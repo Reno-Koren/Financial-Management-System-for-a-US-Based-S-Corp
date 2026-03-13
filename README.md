@@ -1,38 +1,47 @@
 # Cash Accounting Automation — Small Business Treasury Workflow
 
-## Problem
+## Context
 
-Small businesses with significant revenue ($250K+ annually) often handle 
-bookkeeping manually — a time-consuming process prone to errors and with 
-high opportunity cost. This project automates the cash accounting workflow 
-for a real US-based small business operating on a cash accounting basis 
-(transactions recorded when cash moves).
+This project automates the full cash accounting workflow for a real 
+US-based small business — a service and merchandise company generating 
+~$250K in annual revenue. The business operates on a cash accounting 
+basis: transactions are recorded when cash actually moves.
 
-**Before this project:**
-- Owner processed bank statements manually, transaction by transaction, from memory
-- Full yearly reconciliation took 3–4 weeks
-- No structured visibility on cash flow (what goes where and when)
-- Data then transmitted to CPA for tax filing
+The goal was simple: the owner was spending 3 to 4 weeks per year 
+processing bank statements manually, transaction by transaction, from 
+memory. That time had a real opportunity cost. The objective was to 
+bring that down while improving accuracy, auditability, and financial 
+visibility.
 
 ---
 
-## Solution
+## What the pipeline does
 
-A local, privacy-first automated pipeline that transforms raw bank statements 
-into categorized, verified financial data — without sending sensitive data 
-to external cloud services.
+Takes raw PDF bank statements as input and produces:
+- Categorized and verified transaction data in Excel
+- A chart of accounts mapping ready for CPA transmission
+- Monthly reporting on cash flow by category
+- Visual dashboards on inflows, outflows and trends
 
-**PDF bank statement → Local LLM → JSON → Python categorization 
-→ Excel → Power BI dashboard**
+**PDF bank statements → Local LLM → JSON → Python 
+→ Excel + Reference file → Accounts mapping → Reporting**
+
+---
+
+## Why local
+
+All financial data stays on a local server. Nothing is sent to 
+external APIs. The LLM (Qwen 8B) runs via LM Studio on a local 
+desktop and is accessible from a laptop via AnythingLLM — both 
+on the same private network.
 
 ---
 
 ## Workflow
 
-### Step 1 — PDF to JSON (Local LLM)
-Bank statements are processed by a local LLM (Qwen 8B) hosted via 
-LM Studio on a local server, accessible via AnythingLLM on a separate 
-device. The LLM structures each transaction into a standardized JSON format:
+### Step 1 — PDF to JSON
+The LLM reads each bank statement and structures every transaction 
+into a standardized JSON format:
 ```json
 {
   "Date": "",
@@ -44,44 +53,67 @@ device. The LLM structures each transaction into a standardized JSON format:
 }
 ```
 
-**Why local?** All financial data stays on-premise. 
-No sensitive data transmitted to external APIs.
+Processing time is roughly 10 to 15 minutes per statement. 
+Slower than a pure script, but meaningfully more accurate on 
+messy or inconsistent transaction descriptions.
 
-### Step 2 — First Checkpoint
-Before proceeding:
-- Total amount in bank statement = Total amount in Excel ✓
-- Row count in bank statement = Row count in Excel ✓
+### Step 2 — First checkpoint
+Before moving forward:
+- Total amount in JSON = Total amount on bank statement ✓
+- Row count in JSON = Row count on bank statement ✓
 
-If both checks pass → proceed. If not → identify and fix the discrepancy.
+If both pass, continue. If not, find and fix the discrepancy first.
 
-### Step 3 — Excel Data Reference
-A structured Excel reference file maps keywords to categories.
-Each column header = one category. Each value in the column = 
-a keyword to find in the transaction description.
+### Step 3 — Excel reference file
+Categorization is driven by a dedicated Excel reference file — 
+not hardcoded lists in the script.
 
-**Advantages over hardcoded Python lists:**
-- Flexible — add/modify keywords without touching code
-- Visual — conditional formatting highlights duplicates instantly
-- Readable — 100+ terms manageable in a spreadsheet, not in a script
-- Ordered — left-to-right priority handles recurring keyword conflicts
+Structure: each column header is a category name. 
+Each value in that column is a keyword to look for 
+in the transaction description.
 
-### Step 4 — Python Categorization Script
+This replaced the original hardcoded Python approach for 
+three practical reasons: easier to update without touching code, 
+readable at 100+ terms, and conditional formatting instantly 
+flags duplicate keywords across categories.
+
+Column order matters: Python reads left to right, so less frequent 
+categories whose keywords overlap with common ones are placed further 
+left to ensure correct matching priority.
+
+### Step 4 — Python categorization
 The script cross-references each transaction description against 
-the Excel reference file and adds two columns:
+the reference file and adds two columns:
 
-- `Keyword_Source` — which keyword triggered the category
-- `In/Out` — cash inflow or outflow
+- `Keyword_Source` — which keyword triggered the match
+- `In/Out` — inflow or outflow
 
-### Step 5 — Final Checkpoints
-- Uncategorized transactions flagged automatically (6% average on last full year)
+### Step 5 — Second checkpoint
+- Any uncategorized transaction is flagged automatically
 - Total amount verified again
 - Row count verified again
 
-### Step 6 — Power BI Dashboard
-Structured data loaded into Power BI for visual cash flow analysis:
-- Monthly breakdown by category
-- Inflow vs outflow tracking
-- Trend visualization across accounts
+Average uncategorized rate on last full year: ~6%. 
+These are reviewed manually before proceeding.
+
+This process runs 24 times per year — 2 bank accounts × 12 months.
+
+### Step 6 — Chart of accounts mapping
+Categories are mapped to a standard US chart of accounts structure, 
+built by reverse-engineering the company's 2024 tax declaration — 
+the same structure the CPA already works with.
+
+Example: Software, Freight and Shipping → mapped under Utilities.
+
+This step produces a file the CPA can work with directly, 
+without reformatting or interpretation.
+
+### Step 7 — Reporting
+*(In progress — to be documented)*
+
+Monthly reporting by category — Excel pivot tables and Power BI 
+dashboards covering inflows, outflows and category trends across 
+the full year.
 
 ---
 
@@ -90,67 +122,65 @@ Structured data loaded into Power BI for visual cash flow analysis:
 | Metric | Before | After |
 |--------|--------|-------|
 | Processing time (full year) | 3–4 weeks | 8–15 hours |
-| Transactions processed | ~1,800/year | ~1,800/year |
-| Uncategorized rate | Variable/unknown | ~6% (flagged automatically) |
-| Data loss risk | Manual, unverified | 3 automated checkpoints |
-| Cash flow visibility | None | Real-time Power BI dashboard |
+| Transactions per year | ~1,800 | ~1,800 |
+| Uncategorized rate | Unknown | ~6% flagged automatically |
+| Checkpoints | None | 3 automated verification steps |
+| CPA-ready output | Manual reformatting | Direct mapping to existing chart of accounts |
+| Cash flow visibility | None | Monthly reporting + dashboards |
 
 ---
 
-## Tech Stack
+## Tech stack
 
-| Tool | Purpose |
-|------|---------|
-| Qwen 8B (local) | PDF to JSON structuring |
+| Tool | Role |
+|------|------|
+| Qwen 8B | PDF to JSON structuring |
 | LM Studio | Local LLM hosting |
 | AnythingLLM | Local LLM interface |
 | Python | Categorization script |
-| Excel + Power Query | Data reference + loading |
+| Excel + Power Query | Reference file + data loading |
 | Power BI | Dashboard visualization |
 
 ---
 
-## Iteration History
+## How this evolved
 
-**V1 — Pure Python**
-Keyword lists hardcoded directly in the script.
+The first version used hardcoded keyword lists directly in the 
+Python script. It worked but created real problems quickly: 
+adding a new keyword meant editing code, duplicate detection 
+was impossible, and with 100+ terms the script became unreadable. 
+More importantly, I couldn't easily audit or improve something 
+I hadn't fully written myself.
 
-Issues encountered:
-- Inflexible — adding keywords required modifying code
-- No duplicate detection
-- No checkpoints
-- Poor readability at 100+ terms
-- Difficult to audit or improve without strong Python knowledge
-
-**V2 — Current System**
-Keyword management moved to Excel reference file.
-Local LLM replaces manual PDF parsing.
-Three automated checkpoints added throughout the pipeline.
+Moving keyword management to a separate Excel reference file 
+solved all of that. Adding the local LLM replaced a brittle 
+manual formatting step with something that handles inconsistent 
+bank statement formats without special cases.
 
 ---
 
-## Known Limitations & Next Steps
+## Limitations
 
-- LLM processing time: 10–15 min per bank statement 
-  (optimization in progress)
-- 6% uncategorized transaction rate on edge cases 
-  (manual review required)
-- Process repeated 24 times per year (2 accounts × 12 months) 
-  — partial automation of this loop under exploration
+- LLM processing: 10–15 min per bank statement 
+  (speed optimization is the main open question)
+- ~6% uncategorized transactions require manual review
+- 24 runs per year (2 accounts × 12 months) — 
+  loop automation under exploration
 
 ---
 
-## Data & Privacy
+## Data and privacy
 
-All data used in this project belongs to a real US-based small business.
-Raw financial data is excluded from this repository (.gitignore).
-Only anonymized examples and code logic are shared publicly.
+This project was built on real financial data from a US-based 
+small business. All raw data is excluded from this repository. 
+Only code and anonymized structural examples are shared here.
 
 ---
 
 ## Status
 
-✅ Year 1 complete — fully processed and verified  
-✅ Year 2 complete  
-✅ Year 3 complete  
-🔄 Optimization in progress
+✅ Full pipeline operational  
+✅ 3 years of data processed and verified  
+✅ Chart of accounts mapping complete  
+🔄 Reporting section in progress  
+🔄 LLM processing speed — optimization in progress
