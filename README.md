@@ -245,11 +245,11 @@ Sensitive documents stored exclusively on encrypted Proton Drive.
 
 ## Status
 
-- [DONE] : Document management infrastructure complete
-- [DONE] :Full automation pipeline operational
-- [DONE] : 3 years of data processed and verified
-- [DONE] :CPA output produced and validated
-- [IN PROGRESS] :Dashboards — refinement in progress
-- [IN PROGRESS] :Forecasting and budget — in progress
-- [IN PROGRESS] :Automatic CPA mapping — planned
-- [IN PROGRESS] :LLM speed optimization — planned
+- [DONE]  Document management infrastructure complete
+- [DONE]  Full automation pipeline operational
+- [DONE]  3 years of data processed and verified
+- [DONE]  CPA output produced and validated
+- [IN PROGRESS]  Dashboards — refinement in progress
+- [IN PROGRESS]  Forecasting and budget — in progress
+- [IN PROGRESS]  Automatic CPA mapping — planned
+- [IN PROGRESS]  LLM speed optimization — planned
