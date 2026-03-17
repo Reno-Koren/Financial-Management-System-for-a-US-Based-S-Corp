@@ -1,3 +1,3 @@
 
 ## ROADMAP
-![XTMA RoadMap](asset/ROADMAP.png)
+![XTMA RoadMap](Assets/ROADMAP.png)
