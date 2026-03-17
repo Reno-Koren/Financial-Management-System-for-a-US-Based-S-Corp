@@ -7,13 +7,15 @@ US-based S-Corp operating in service and merchandise (~$250K annual
 revenue). The business had no financial infrastructure before this 
 project — everything was handled manually from memory.
 
+Built independently as a self-initiated project alongside 
+full-time studies — no prior development background.
+
 This system covers the full financial workflow: document management, 
 cash accounting automation, internal reporting, CPA-ready output, 
 and visual dashboards.
 
 All data is stored and shared securely via Proton Drive 
 (end-to-end encrypted), accessible in real time by the business owner.
-
 
 ## Scope
 
