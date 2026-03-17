@@ -17,32 +17,6 @@ and visual dashboards.
 All data is stored and shared securely via Proton Drive 
 (end-to-end encrypted), accessible in real time by the business owner.
 
-flowchart TD
-    A[📄 PDF Bank Statements] --> B[🤖 Local LLM - Qwen 8B]
-    B --> C[📋 JSON Structured Data]
-    C --> D{✅ Checkpoint 1\nAmount & Row Count}
-    D -->|Pass| E[📊 Excel Reference File\nKeyword Categorization]
-    D -->|Fail| C
-    E --> F[🐍 Python Script\nCategorization]
-    F --> G{✅ Checkpoint 2\nUncategorized & Totals}
-    G -->|Pass| H[📁 Accounting_DataFile]
-    G -->|Fail| E
-    H --> I{✅ Checkpoint 3\nFinal Verification}
-    I -->|Pass| J[📈 Monthly_Reporting]
-    I -->|Fail| H
-    J --> K[📤 CPA Output\nAccounts & Mapping]
-    J --> L[📊 Power BI Dashboards]
-    J --> M[🔮 Forecasting & Budget\nIn Progress]
-    K --> N[📋 Form 1120-S\nvia CPA]
-
-    style A fill:#2D4A6B,color:#fff
-    style B fill:#1B3A5C,color:#fff
-    style D fill:#1A4A2E,color:#fff
-    style G fill:#1A4A2E,color:#fff
-    style I fill:#1A4A2E,color:#fff
-    style H fill:#2D4A6B,color:#fff
-    style K fill:#4A2D6B,color:#fff
-    style N fill:#4A2D6B,color:#fff
 ## Scope
 
 ### 1. Document Management
