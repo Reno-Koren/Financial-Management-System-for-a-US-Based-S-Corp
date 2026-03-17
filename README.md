@@ -5,7 +5,7 @@
 End-to-end financial management system built from scratch for a real 
 US-based S-Corp operating in service and merchandise (~$250K annual 
 revenue). The business had no financial infrastructure before this 
-project — everything was handled manually from memory.
+project.
 
 Built independently as a self-initiated project alongside 
 full-time studies — no prior development background.
