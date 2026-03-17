@@ -43,8 +43,6 @@ on Proton Drive with shared access for the business owner.
 The core automated pipeline transforms raw PDF bank statements 
 into structured, verified financial data.
 
-**PDF bank statements → Local LLM → JSON → Python 
-→ Accounting_DataFile → Monthly Reporting → CPA Output**
 
 #### Step 1 — PDF to JSON (Local LLM)
 Bank statements processed by a local LLM (Qwen 8B) hosted via 
