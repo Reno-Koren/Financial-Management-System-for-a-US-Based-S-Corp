@@ -56,7 +56,7 @@ The LLM structures each transaction into standardized JSON:
   "Description": "",
   "Amount": "",
   "Account": "",
-  "Category": ""
+  "Inflow/Outflow": ""
 }
 ```
 
