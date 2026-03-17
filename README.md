@@ -94,6 +94,9 @@ file and adds:
 - Total amount verified
 - Row count verified
 
+#### Step 6 — Excel Fusion
+Monthly output files are merged into a single master file
+for annual consolidation into the Accounting_DataFile.
 Process runs 24 times per year (2 accounts × 12 months).
 
 
