@@ -1,47 +1,51 @@
-# Cash Accounting Automation — Small Business Treasury Workflow
+# XTMA — Financial Management System for a US-Based S-Corp
 
-## Context
+## Overview
 
-This project automates the full cash accounting workflow for a real 
-US-based small business — a service and merchandise company generating 
-~$250K in annual revenue. The business operates on a cash accounting 
-basis: transactions are recorded when cash actually moves.
+End-to-end financial management system built from scratch for a real 
+US-based S-Corp operating in service and merchandise (~$250K annual 
+revenue). The business had no financial infrastructure before this 
+project — everything was handled manually from memory.
 
-The goal was simple: the owner was spending 3 to 4 weeks per year 
-processing bank statements manually, transaction by transaction, from 
-memory. That time had a real opportunity cost. The objective was to 
-bring that down while improving accuracy, auditability, and financial 
-visibility.
+This system covers the full financial workflow: document management, 
+cash accounting automation, internal reporting, CPA-ready output, 
+and visual dashboards.
+
+All data is stored and shared securely via Proton Drive 
+(end-to-end encrypted), accessible in real time by the business owner.
 
 ---
 
-## What the pipeline does
+## Scope
 
-Takes raw PDF bank statements as input and produces:
-- Categorized and verified transaction data in Excel
-- A chart of accounts mapping ready for CPA transmission
-- Monthly reporting on cash flow by category
-- Visual dashboards on inflows, outflows and trends
+### 1. Document Management
+Centralized and structured repository of all company documents:
+- Bank statements (ECB)
+- Invoices and receipts
+- Contracts and accreditations
+- Corporate documents (statutes, incorporation)
+- Tax declarations and past filings
+- Employee forms (W-2, payroll-related documents)
+- Internal working files and historical reports
+
+All documents organized, named consistently, and securely stored 
+on Proton Drive with shared access for the business owner.
+
+---
+
+### 2. Cash Accounting Automation
+
+The core automated pipeline transforms raw PDF bank statements 
+into structured, verified financial data.
 
 **PDF bank statements → Local LLM → JSON → Python 
-→ Excel + Reference file → Accounts mapping → Reporting**
+→ Accounting_DataFile → Monthly Reporting → CPA Output**
 
----
+#### Step 1 — PDF to JSON (Local LLM)
+Bank statements processed by a local LLM (Qwen 8B) hosted via 
+LM Studio, accessible via AnythingLLM on the local network.
 
-## Why local
-
-All financial data stays on a local server. Nothing is sent to 
-external APIs. The LLM (Qwen 8B) runs via LM Studio on a local 
-desktop and is accessible from a laptop via AnythingLLM — both 
-on the same private network.
-
----
-
-## Workflow
-
-### Step 1 — PDF to JSON
-The LLM reads each bank statement and structures every transaction 
-into a standardized JSON format:
+The LLM structures each transaction into standardized JSON:
 ```json
 {
   "Date": "",
@@ -53,67 +57,116 @@ into a standardized JSON format:
 }
 ```
 
-Processing time is roughly 10 to 15 minutes per statement. 
-Slower than a pure script, but meaningfully more accurate on 
-messy or inconsistent transaction descriptions.
+**Why local?** All sensitive financial data stays on-premise. 
+Nothing sent to external APIs.
 
-### Step 2 — First checkpoint
-Before moving forward:
-- Total amount in JSON = Total amount on bank statement ✓
+Processing time: ~10–15 minutes per statement.
+Uncategorized rate: ~6% (flagged automatically for manual review).
+
+#### Step 2 — First Checkpoint
+- Total amount in JSON = Total on bank statement ✓
 - Row count in JSON = Row count on bank statement ✓
 
-If both pass, continue. If not, find and fix the discrepancy first.
-
-### Step 3 — Excel reference file
-Categorization is driven by a dedicated Excel reference file — 
+#### Step 3 — Excel Reference File
+Categorization driven by a dedicated Excel reference file — 
 not hardcoded lists in the script.
 
-Structure: each column header is a category name. 
-Each value in that column is a keyword to look for 
-in the transaction description.
+Structure: each column header = one category. 
+Each value = a keyword to match in the transaction description.
 
-This replaced the original hardcoded Python approach for 
-three practical reasons: easier to update without touching code, 
-readable at 100+ terms, and conditional formatting instantly 
-flags duplicate keywords across categories.
+Advantages over hardcoded Python lists:
+- Add or modify keywords without touching code
+- Conditional formatting flags duplicate keywords instantly
+- Readable and auditable at 100+ terms
+- Left-to-right column order manages keyword priority conflicts
 
-Column order matters: Python reads left to right, so less frequent 
-categories whose keywords overlap with common ones are placed further 
-left to ensure correct matching priority.
-
-### Step 4 — Python categorization
-The script cross-references each transaction description against 
-the reference file and adds two columns:
-
-- `Keyword_Source` — which keyword triggered the match
+#### Step 4 — Python Categorization
+Script cross-references each transaction against the reference 
+file and adds:
+- `Keyword_Source` — keyword that triggered the match
 - `In/Out` — inflow or outflow
 
-### Step 5 — Second checkpoint
-- Any uncategorized transaction is flagged automatically
-- Total amount verified again
-- Row count verified again
+#### Step 5 — Final Checkpoints
+- Uncategorized transactions flagged automatically
+- Total amount verified
+- Row count verified
 
-Average uncategorized rate on last full year: ~6%. 
-These are reviewed manually before proceeding.
+Process runs 24 times per year (2 accounts × 12 months).
 
-This process runs 24 times per year — 2 bank accounts × 12 months.
+---
 
-### Step 6 — Chart of accounts mapping
-Categories are mapped to a standard US chart of accounts structure, 
-built by reverse-engineering the company's 2024 tax declaration — 
-the same structure the CPA already works with.
+### 3. Accounting_DataFile
 
-Example: Software, Freight and Shipping → mapped under Utilities.
+Master internal file consolidating all transactions for a given year.
 
-This step produces a file the CPA can work with directly, 
-without reformatting or interpretation.
+**Structure:**
+Date | Month | Description | Amount | Account | Category | 
+Keyword_Source | In/Out
 
-### Step 7 — Reporting
-*(In progress — to be documented)*
+**Features:**
+- Two slicers: Category and Month
+- Full granularity — every transaction individually traceable
+- Final verification checkpoint before reporting
+- Contextual review of ambiguous transactions
 
-Monthly reporting by category — Excel pivot tables and Power BI 
-dashboards covering inflows, outflows and category trends across 
-the full year.
+This file is the single source of truth for all downstream outputs.
+
+---
+
+### 4. Accounting_Monthly_Reporting
+
+Internal file built from the DataFile. Standardized template 
+consistent across all years.
+
+Organizes transactions by category groups:
+- Income
+- Operating Expenses
+- Variable Costs
+- Travel Expenses
+- Non-Business Related Expenses
+
+Month-by-month breakdown across the full year with first-level 
+insights: most profitable month, highest expense month per category.
+
+---
+
+### 5. CPA Output — Accounts & Mapping
+
+External file produced for the CPA. Maps internal categories 
+to standard US chart of accounts used in the Form 1120-S filing.
+
+Example: Software, Freight and Shipping → Utilities
+
+Built by reverse-engineering the 2024 tax declaration — 
+the exact structure the CPA already works with.
+
+*Note: automatic mapping from previous year's accounts 
+is a planned improvement — see ROADMAP.*
+
+---
+
+### 6. Dashboards & Visual Reporting
+
+*(In progress)*
+
+Power BI dashboards providing visual cash flow analysis 
+across all categories, integrating bank data and additional 
+sources (Stripe, etc.).
+
+Current status: first versions produced, refinement in progress 
+based on business owner requirements.
+
+---
+
+### 7. Management Reporting & Forecasting
+
+*(In progress)*
+
+- Cost structure analysis across 3 years of data
+- Annual budget
+- 6-month cash flow forecast
+
+*See ROADMAP for current status.*
 
 ---
 
@@ -121,66 +174,79 @@ the full year.
 
 | Metric | Before | After |
 |--------|--------|-------|
+| Financial infrastructure | None | Complete system |
 | Processing time (full year) | 3–4 weeks | 8–15 hours |
 | Transactions per year | ~1,800 | ~1,800 |
 | Uncategorized rate | Unknown | ~6% flagged automatically |
 | Checkpoints | None | 3 automated verification steps |
-| CPA-ready output | Manual reformatting | Direct mapping to existing chart of accounts |
+| Document management | Scattered | Centralized, structured, encrypted |
+| CPA-ready output | Manual reformatting | Direct mapping to chart of accounts |
 | Cash flow visibility | None | Monthly reporting + dashboards |
 
 ---
 
-## Tech stack
+## Tech Stack
 
 | Tool | Role |
 |------|------|
-| Qwen 8B | PDF to JSON structuring |
+| Qwen 8B (local) | PDF to JSON structuring |
 | LM Studio | Local LLM hosting |
 | AnythingLLM | Local LLM interface |
 | Python | Categorization script |
-| Excel + Power Query | Reference file + data loading |
-| Power BI | Dashboard visualization |
+| Excel + Power Query | Reference file, DataFile, reporting |
+| Power BI | Visual dashboards |
+| Proton Drive | Encrypted storage and sharing |
 
 ---
 
-## How this evolved
+## How This Evolved
 
-The first version used hardcoded keyword lists directly in the 
-Python script. It worked but created real problems quickly: 
-adding a new keyword meant editing code, duplicate detection 
-was impossible, and with 100+ terms the script became unreadable. 
-More importantly, I couldn't easily audit or improve something 
-I hadn't fully written myself.
+**V1 — Pure Python**
+Keyword lists hardcoded directly in the script.
 
-Moving keyword management to a separate Excel reference file 
-solved all of that. Adding the local LLM replaced a brittle 
-manual formatting step with something that handles inconsistent 
-bank statement formats without special cases.
+Problems:
+- Inflexible — adding keywords required editing code
+- No duplicate detection
+- No checkpoints
+- Unreadable at 100+ terms
+- Difficult to audit without strong Python knowledge
+
+**V2 — Current System**
+Keyword management moved to a dedicated Excel reference file.
+Local LLM replaces manual PDF parsing.
+Three automated checkpoints added.
+Full document infrastructure built on Proton Drive.
 
 ---
 
-## Limitations
+## Limitations & Open Questions
 
-- LLM processing: 10–15 min per bank statement 
-  (speed optimization is the main open question)
+- LLM processing: ~10–15 min per statement (optimization needed)
 - ~6% uncategorized transactions require manual review
-- 24 runs per year (2 accounts × 12 months) — 
-  loop automation under exploration
+- 24 manual runs per year (automation planned)
+- Dashboard refinement in progress
+- Automatic CPA mapping not yet implemented
+
+*See ROADMAP for planned improvements.*
 
 ---
 
-## Data and privacy
+## Data & Privacy
 
-This project was built on real financial data from a US-based 
-small business. All raw data is excluded from this repository. 
-Only code and anonymized structural examples are shared here.
+Built on real financial data from a US-based S-Corp.
+All raw data excluded from this repository (.gitignore).
+Only anonymized examples and code logic shared publicly.
+Sensitive documents stored exclusively on encrypted Proton Drive.
 
 ---
 
 ## Status
 
-✅ Full pipeline operational  
-✅ 3 years of data processed and verified  
-✅ Chart of accounts mapping complete  
-🔄 Reporting section in progress  
-🔄 LLM processing speed — optimization in progress
+Done : Document management infrastructure complete
+Done :Full automation pipeline operational
+Done : 3 years of data processed and verified
+Done :CPA output produced and validated
+In Progress :Dashboards — refinement in progress
+In Progress :Forecasting and budget — in progress
+In Progress :Automatic CPA mapping — planned
+In Progress :LLM speed optimization — planned
