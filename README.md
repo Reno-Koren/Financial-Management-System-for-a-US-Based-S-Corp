@@ -17,6 +17,7 @@ and visual dashboards.
 All data is stored and shared securely via Proton Drive 
 (end-to-end encrypted), accessible in real time by the business owner.
 
+→ See full roadmap and planned improvements : [ROADMAP.md](ROADMAP.md)
 ## Workflow overview
 
 ![XTMA Workflow](Assets/WorkFlow_V2.png)
