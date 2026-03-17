@@ -14,7 +14,6 @@ and visual dashboards.
 All data is stored and shared securely via Proton Drive 
 (end-to-end encrypted), accessible in real time by the business owner.
 
----
 
 ## Scope
 
@@ -31,7 +30,7 @@ Centralized and structured repository of all company documents:
 All documents organized, named consistently, and securely stored 
 on Proton Drive with shared access for the business owner.
 
----
+
 
 ### 2. Cash Accounting Automation
 
@@ -93,7 +92,7 @@ file and adds:
 
 Process runs 24 times per year (2 accounts × 12 months).
 
----
+
 
 ### 3. Accounting_DataFile
 
@@ -111,7 +110,7 @@ Keyword_Source | In/Out
 
 This file is the single source of truth for all downstream outputs.
 
----
+
 
 ### 4. Accounting_Monthly_Reporting
 
@@ -128,7 +127,7 @@ Organizes transactions by category groups:
 Month-by-month breakdown across the full year with first-level 
 insights: most profitable month, highest expense month per category.
 
----
+
 
 ### 5. CPA Output — Accounts & Mapping
 
@@ -143,7 +142,7 @@ the exact structure the CPA already works with.
 *Note: automatic mapping from previous year's accounts 
 is a planned improvement — see ROADMAP.*
 
----
+
 
 ### 6. Dashboards & Visual Reporting
 
@@ -156,7 +155,7 @@ sources (Stripe, etc.).
 Current status: first versions produced, refinement in progress 
 based on business owner requirements.
 
----
+
 
 ### 7. Management Reporting & Forecasting
 
@@ -168,7 +167,7 @@ based on business owner requirements.
 
 *See ROADMAP for current status.*
 
----
+
 
 ## Results
 
@@ -183,7 +182,7 @@ based on business owner requirements.
 | CPA-ready output | Manual reformatting | Direct mapping to chart of accounts |
 | Cash flow visibility | None | Monthly reporting + dashboards |
 
----
+
 
 ## Tech Stack
 
@@ -197,7 +196,7 @@ based on business owner requirements.
 | Power BI | Visual dashboards |
 | Proton Drive | Encrypted storage and sharing |
 
----
+
 
 ## How This Evolved
 
@@ -217,7 +216,7 @@ Local LLM replaces manual PDF parsing.
 Three automated checkpoints added.
 Full document infrastructure built on Proton Drive.
 
----
+
 
 ## Limitations & Open Questions
 
@@ -229,7 +228,7 @@ Full document infrastructure built on Proton Drive.
 
 *See ROADMAP for planned improvements.*
 
----
+
 
 ## Data & Privacy
 
@@ -238,7 +237,7 @@ All raw data excluded from this repository (.gitignore).
 Only anonymized examples and code logic shared publicly.
 Sensitive documents stored exclusively on encrypted Proton Drive.
 
----
+
 
 ## Status
 
