@@ -19,7 +19,7 @@ All data is stored and shared securely via Proton Drive
 
 ## Workflow overview
 
-![XTMA Workflow](asset/WorkFlow_V2.png)
+![XTMA Workflow](Assets/WorkFlow_V2.png)
 
 ## Scope
 
