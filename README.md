@@ -88,6 +88,7 @@ Script cross-references each transaction against the reference
 file and adds:
 - `Keyword_Source` — keyword that triggered the match
 - `In/Out` — inflow or outflow
+→ [`src/categorization.py`](src/categorization.py)
 
 #### Step 5 — Final Checkpoints
 - Uncategorized transactions flagged automatically
@@ -98,6 +99,7 @@ file and adds:
 Monthly output files are merged into a single master file
 for annual consolidation into the Accounting_DataFile.
 
+→ [`src/fusion.py`](src/fusion.py)
 
 ### 3. Accounting_DataFile
 
