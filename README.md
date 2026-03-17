@@ -145,7 +145,7 @@ to standard US chart of accounts used in the Form 1120-S filing.
 
 Example: Software, Freight and Shipping → Utilities
 
-Built by reverse-engineering the 2024 tax declaration — 
+Built with data coming from the 2025 tax declaration — 
 the exact structure the CPA already works with.
 
 *Note: automatic mapping from previous year's accounts 
