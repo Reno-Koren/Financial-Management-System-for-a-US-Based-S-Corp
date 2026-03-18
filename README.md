@@ -183,7 +183,7 @@ based on business owner requirements.
 | Metric | Before | After |
 |--------|--------|-------|
 | Financial infrastructure | None | Complete system |
-| Processing time (full year) | 3–4 weeks | 8–15 hours |
+| Processing time (full year) | 3–4 weeks | 15-20 hours |
 | Transactions per year | ~1,800 | ~1,800 |
 | Uncategorized rate | Unknown | ~6% flagged automatically |
 | Checkpoints | None | 3 automated verification steps |
