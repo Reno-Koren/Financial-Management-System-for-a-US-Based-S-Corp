@@ -1,7 +1,7 @@
 # XTMA — Financial Management System for a US-Based S-Corp
 
 ## Overview
-
+Please note the devlopment of this project in this form has started in december 2025 and will go a lot of changes.  
 End-to-end financial management system built from scratch for a real 
 US-based S-Corp operating in service and merchandise (~$250K annual 
 revenue). The business had no financial infrastructure before this 
