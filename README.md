@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Please note This project is actively only being developed since December 2025, documentation and features are continuously evolving **
+**Please note this project is actively only being developed since December 2025, documentation and features are continuously evolving **
 
 End-to-end financial management system built from scratch for a real 
 US-based S-Corp operating in service and merchandise (~$250K annual 
